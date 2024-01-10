@@ -3,10 +3,25 @@
 
 import { Icons } from "@/components/Other/icons";
 import { Button } from "@/components/ui/button";
+import { ClientSafeProvider, getProviders, signIn } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 
 
 export function AuthForm() {
+
+  const [providers, setProviders] = useState<
+  Record<string, ClientSafeProvider>
+>({});
+
+useEffect(() => {
+  async function getProvidersValue() {
+    const p = await getProviders();
+    setProviders(p as Record<string, ClientSafeProvider>);
+  }
+  getProvidersValue();
+}, []);
+
   return (
     <div className="grid gap-6">
       <div className="relative">
@@ -20,10 +35,24 @@ export function AuthForm() {
         </div>
       </div>
 
-      <Button variant="outline" type="button">
-        <Icons.google className="mr-2 h-4 w-4" />
-        Google
-      </Button>
+      {providers &&
+        !!Object.keys(providers).length &&
+        Object.values(providers!).map((provider) => (
+          <Button
+            key={provider.name}
+            variant="outline"
+            type="button"
+            onClick={() =>
+              signIn(provider.id, {
+                callbackUrl: "/portal",
+                //   redirect: false
+              })
+            }
+          >
+            <Icons.google className="mr-2 h-4 w-4" />
+            Google
+          </Button>
+        ))}
     </div>
   );
 }
