@@ -2,11 +2,16 @@
 import Container from '@/components/Common/Container';
 import { daysOfTheWeek, getDays, months } from '@/lib/getDays';
 import { cn } from '@/lib/utils';
+import { Events } from '@prisma/client';
 import dayjs from 'dayjs';
 import React, { useState } from 'react'
 import { IoMdArrowDropleft, IoMdArrowDropright } from 'react-icons/io';
+import EventPopOver from './EventPopOver';
 
-const Calendar = () => {
+type Props = {
+  events: Events[]
+}
+const Calendar = ({events}: Props) => {
     const currentDate = dayjs()
 
     const [today, setToday] = useState(currentDate)
@@ -58,19 +63,20 @@ const Calendar = () => {
        
        <div className="grid grid-cols-7">
          {getDays(today.month(), today.year()).map(({ date, currentMonth, today }, index) => {
-           
+           const event = events?.find(event => dayjs(event.startDate).isSame(date, 'day'));
            return (
              <div key={index} className="h-10 grid place-content-center">
-              
-               <h1 
-                 className={cn(
-                   !currentMonth && "text-slate-400",
-                   today && "bg-blue-600 text-white ",
-                   "h-8 w-8 p-1 grid place-content-center font rounded-full cursor-pointer hover:bg-black hover:text-white dark:hover:bg-slate-500"
-                 )}
-               >
-                 {date.date()}{" "}
-               </h1>
+              {!event ?
+                <h1 
+                  className={cn(
+                    !currentMonth && "text-slate-400",
+                    today && "bg-blue-600 text-white ",
+                    "h-8 w-8 p-1 grid place-content-center font rounded-full cursor-pointer hover:bg-black hover:text-white dark:hover:bg-slate-500"
+                  )}
+                >
+                  {date.date()}{" "}
+                </h1>
+                : <EventPopOver event={event as Events} date={date.date()} />}
               
              </div>
            );
