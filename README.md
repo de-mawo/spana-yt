@@ -12,7 +12,7 @@
 
 <img src="/spanaOG.png" alt="project-Img" />
 
-## <a href="#"> Video Tutorial </a>
+## <a href="https://youtu.be/F_d3TviPLOk?si=ACY13MBcpQEbg1wb"> Video Tutorial </a>
 
 ### Tech-Stack
 The app was built using the following technologies:
